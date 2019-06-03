@@ -1,0 +1,10 @@
+C:\Users\Mitch\source\repos\Auto Dimmer\bin\Release\Auto Dimmer.exe.config
+C:\Users\Mitch\source\repos\Auto Dimmer\bin\Release\Auto Dimmer.exe
+C:\Users\Mitch\source\repos\Auto Dimmer\bin\Release\Auto Dimmer.pdb
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto Dimmer.csprojAssemblyReference.cache
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto_Dimmer.Form1.resources
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto_Dimmer.Properties.Resources.resources
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto Dimmer.csproj.GenerateResource.cache
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto Dimmer.csproj.CoreCompileInputs.cache
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto Dimmer.exe
+C:\Users\Mitch\source\repos\Auto Dimmer\obj\Release\Auto Dimmer.pdb
