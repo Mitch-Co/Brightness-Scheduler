@@ -19,26 +19,32 @@ namespace Auto_Dimmer
             InitializeComponent();
         }
 
-        private String fileName = "schedule.dat"; //Hardcoding this feels wrong
+        private static String fileNameR = "requests.dat";
+        private static String fileNameS = "settings.dat";
+        private static String fileLoc = @"./";
 
         private List<BrightnessRequest> requests = new List<BrightnessRequest>();
+        private Settings globalSettings;
 
         EnforcerThread running;
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            String fileLoc = @"./" + fileName;
-
             richTextBox1.AppendText("Data Log:\n");
             richTextBox2.AppendText("Program Log:\n");
 
-            FileManager fm = new FileManager(fileName);
-            String[] rawData = null;
-            consoleAppend(fm.initialize(ref rawData));
+            //Get BrightnessRequest data from file 
+            FileManager fm0 = new FileManager(fileLoc, fileNameR);
+            String[] rawData0 = null;
+            consoleAppend(fm0.initialize(ref rawData0));
 
-            //BrightnessRequest testRequest = BrightnessRequest.fromString(5,"0,0,0;12,12,12;0.92");
+            //Get BrightnessRequest data from file 
+            FileManager fm1 = new FileManager(fileLoc, fileNameS);
+            String[] rawData1 = null;
+            consoleAppend(fm1.initialize(ref rawData1));
 
-            loadRequests(rawData);
+            
+            loadRequests(rawData0);
             displayEvents();
 
             this.FormClosed += new FormClosedEventHandler(Form1_FormClosed);
@@ -58,7 +64,7 @@ namespace Auto_Dimmer
         private void Button1_Click(object sender, EventArgs e) //As soon as the BrightnessRequest is added, changes are reflected in the file
         {
             running.stopThread();
-            FileManager fm = new FileManager(fileName);
+            FileManager fm = new FileManager(fileLoc, fileNameR);
             String[] rawData = null;
             double inputBrightness = 1.0;
 
@@ -113,7 +119,7 @@ namespace Auto_Dimmer
         private void Button2_Click(object sender, EventArgs e) //Remove request from requestlist, modify data file to reflect changes
         {
             running.stopThread();
-            FileManager fm = new FileManager(fileName);
+            FileManager fm = new FileManager(fileLoc, fileNameR);
             String[] rawData = null;
             int toRemove = 1;
 
@@ -154,7 +160,7 @@ namespace Auto_Dimmer
             richTextBox2.ScrollToCaret();
         }
 
-        private void loadRequests(string[] rawData)
+        private void loadRequests(string[] rawData) //Loads requests from a string array to the BR list
         {
             requests.Clear();
             if (rawData == null)
@@ -211,7 +217,8 @@ namespace Auto_Dimmer
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            int updated = 1000;
+            int updated = -1; //Initialization does not really matter (if TryParse fails, it sets updated to zero)
+
             if(int.TryParse(textBox5.Text, out updated) && updated >= 0 && updated <= 100)
             {
                 consoleAppend("Brightness default set to " + updated.ToString());
@@ -221,6 +228,12 @@ namespace Auto_Dimmer
             {
                 consoleAppend("Incorrect format for default brightness, must be a number 0-100");
             }
+
+        }
+
+        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

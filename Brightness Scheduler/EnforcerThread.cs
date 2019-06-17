@@ -34,9 +34,8 @@ namespace Auto_Dimmer
                     bool defaultB = true;
                     foreach(BrightnessRequest BR in toService)
                     {
-                        if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime()))
+                        if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
                         {
-                            //Console.WriteLine(localTime.toString() + " Falls Inbetween " + BR.getStartTime().toString() + " and " + BR.getEndTime().toString());
                             setBrightness(BR.getBrightness());
                             defaultB = false;
                         }

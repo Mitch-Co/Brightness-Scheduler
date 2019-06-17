@@ -8,3 +8,13 @@ C:\Users\Mitch\source\repos\Auto Dimmer\obj\Debug\Auto Dimmer.csproj.GenerateRes
 C:\Users\Mitch\source\repos\Auto Dimmer\obj\Debug\Auto Dimmer.csproj.CoreCompileInputs.cache
 C:\Users\Mitch\source\repos\Auto Dimmer\obj\Debug\Auto Dimmer.exe
 C:\Users\Mitch\source\repos\Auto Dimmer\obj\Debug\Auto Dimmer.pdb
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\bin\Debug\Auto Dimmer.exe.config
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\bin\Debug\Auto Dimmer.exe
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\bin\Debug\Auto Dimmer.pdb
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto Dimmer.csprojAssemblyReference.cache
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto_Dimmer.Form1.resources
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto_Dimmer.Properties.Resources.resources
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto Dimmer.csproj.GenerateResource.cache
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto Dimmer.csproj.CoreCompileInputs.cache
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto Dimmer.exe
+C:\Users\Mitch\Documents\GitHub\Brightness-Scheduler\Brightness Scheduler\obj\Debug\Auto Dimmer.pdb

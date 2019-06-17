@@ -13,10 +13,10 @@ namespace Auto_Dimmer
 
         String filePath { get; set; }
 
-        public FileManager(String fileN, String FileP)
+        public FileManager(String FileP, String fileN)
         {
             this.fileName = fileN;
-            this.filePath = FileP;
+            this.filePath = FileP + fileN;
         }
         public FileManager(String fileN)
         {
@@ -42,7 +42,7 @@ namespace Auto_Dimmer
                 else
                 {
                     File.Create(this.filePath).Close(); //Closes file, similar to fclose() in c
-                    toReturn = "Warning - File " + this.fileName + " not found; a new save file will be created";
+                    toReturn = "Warning - File " + this.fileName + " not found; a new file will be created";
                 }
             }
             catch (Exception E)
