@@ -12,7 +12,7 @@ namespace Auto_Dimmer
     {
         bool defaultIsEnforced; 
         private int defaultBrightness;
-
+        private int refreshRate;
         private List<BrightnessRequest> toService;
 
         private Thread activeThread;
@@ -54,12 +54,14 @@ namespace Auto_Dimmer
             activeThread = null;
             defaultBrightness = 100;
             defaultIsEnforced = false;
+            refreshRate = 0;
         }
         public EnforcerThread()
         {
             activeThread = null;
             defaultBrightness = 100;
             defaultIsEnforced = false;
+            refreshRate = 0;
         }
 
 
@@ -77,19 +79,23 @@ namespace Auto_Dimmer
 
             try
             {
+                /* DANGER ZONE CODE - Only about 80% sure what this does */
+
                 System.Management.ManagementScope scope = new System.Management.ManagementScope("root\\WMI");
                 System.Management.SelectQuery query = new System.Management.SelectQuery("WmiMonitorBrightnessMethods");
                 System.Management.ManagementObjectSearcher mos = new System.Management.ManagementObjectSearcher(scope, query);
                 System.Management.ManagementObjectCollection moc = mos.Get();
 
-                foreach (System.Management.ManagementObject o in moc)
+                foreach (System.Management.ManagementObject o in moc) //Don't ask questions you don't want to know the answer to
                 {
                     o.InvokeMethod("WmiSetBrightness", new Object[] { UInt32.MaxValue, brightnessInBytes });
-                    break; //only work on the first object (for an unknown reason)
+                    break; //Searously
                 }
 
                 moc.Dispose();
                 mos.Dispose();
+
+                /* END OF DANGER ZONE CODE */
             }
             catch (Exception E)
             {
@@ -125,11 +131,66 @@ namespace Auto_Dimmer
             }
         }
 
+        public bool isValidBrightness(int toCheck)
+        {
+            if(toCheck < 0 || toCheck > 100)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool isValidRefreshRate(int toCheck)
+        {
+            if (refreshRate > 0 && refreshRate < 600000) //Must be in between 1ms and 10min
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void updateDefault(int updateBrightness)
         {
-            stopThread();
+            stopThread(); //ZA WARUDO 
+
             this.defaultBrightness = updateBrightness;
-            defaultIsEnforced = true;
+            if(isValidBrightness(defaultBrightness))
+            {
+                this.defaultIsEnforced = true;
+            }
+            else
+            {
+                this.defaultIsEnforced = false;
+            }
+            
+            startThread(); //Time has begun to move again.
+        }
+        public void updateSettings(AllSettings update)
+        {
+            stopThread();
+
+            this.refreshRate = update.getSetting("rrate").getValue();
+
+            if (isValidRefreshRate(this.refreshRate))
+            {
+
+            }
+            else
+            {
+                this.refreshRate = 1000;
+            }
+
+            this.defaultBrightness = update.getSetting("dbright").getValue();
+            if (isValidBrightness(defaultBrightness))
+            {
+                update.getSetting("usedbright").getValue();
+            }
+            else
+            {
+                defaultIsEnforced = false;
+            }
             startThread();
         }
 

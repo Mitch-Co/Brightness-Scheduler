@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="24HourTime.cs" />
+    <Compile Include="AllSettings.cs" />
     <Compile Include="BrightnessRequest.cs" />
     <Compile Include="EnforcerThread.cs" />
     <Compile Include="FileManager.cs" />

@@ -44,13 +44,16 @@
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.label6 = new System.Windows.Forms.Label();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.textBox6 = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -224,6 +227,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Default Brightness:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(266, 34);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(70, 16);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "(Current:)";
+            // 
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -255,6 +268,9 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.textBox6);
+            this.groupBox4.Controls.Add(this.radioButton4);
+            this.groupBox4.Controls.Add(this.radioButton3);
             this.groupBox4.Controls.Add(this.radioButton2);
             this.groupBox4.Controls.Add(this.radioButton1);
             this.groupBox4.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -264,29 +280,6 @@
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Settings:";
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 25);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.radioButton1.Size = new System.Drawing.Size(181, 22);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Use \"Default Brightness\"";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(266, 34);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 16);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "(Current:)";
             // 
             // radioButton2
             // 
@@ -299,6 +292,53 @@
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "When Launched , Minimize Window";
             this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton2_CheckedChanged);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(6, 25);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.radioButton1.Size = new System.Drawing.Size(219, 22);
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Use \"Default Brightness\" Value";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(6, 81);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.radioButton3.Size = new System.Drawing.Size(270, 22);
+            this.radioButton3.TabIndex = 2;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.Text = "Check for Changes Every (Miliseconds):";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton3_CheckedChanged);
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Location = new System.Drawing.Point(6, 109);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.radioButton4.Size = new System.Drawing.Size(149, 22);
+            this.radioButton4.TabIndex = 3;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "Console Skips Lines";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.RadioButton4_CheckedChanged);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(282, 80);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(80, 26);
+            this.textBox6.TabIndex = 4;
             // 
             // Form1
             // 
@@ -356,6 +396,9 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.TextBox textBox6;
     }
 }
 

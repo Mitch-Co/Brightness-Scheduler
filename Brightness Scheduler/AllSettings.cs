@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Auto_Dimmer
 {
-    class Settings
+    class AllSettings
     {
-        private String name { get; set; }
-
+        private List<Settings> listOfSettings = new List<Settings>();
 
     }
 }
