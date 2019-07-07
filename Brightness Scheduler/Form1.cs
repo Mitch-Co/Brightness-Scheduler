@@ -24,7 +24,7 @@ namespace Auto_Dimmer
         private static String fileLoc = @"./";
 
         private List<BrightnessRequest> requests = new List<BrightnessRequest>();
-        private Settings globalSettings;
+        private AllSettings globalSettings;
 
         EnforcerThread running;
 
