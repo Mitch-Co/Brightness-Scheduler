@@ -10,9 +10,12 @@ namespace Auto_Dimmer
 {
     class EnforcerThread
     {
-        bool defaultIsEnforced; 
+        bool useDefBright; 
         private int defaultBrightness;
+
+        private bool useRR;
         private int refreshRate;
+
         private List<BrightnessRequest> toService;
 
         private Thread activeThread;
@@ -40,7 +43,7 @@ namespace Auto_Dimmer
                             defaultB = false;
                         }
                     }
-                    if(defaultB && defaultIsEnforced)
+                    if(defaultB && useDefBright)
                     {
                         setBrightness(this.defaultBrightness);
                     }
@@ -53,14 +56,14 @@ namespace Auto_Dimmer
             this.toService = requests;
             activeThread = null;
             defaultBrightness = 100;
-            defaultIsEnforced = false;
+            useDefBright = false;
             refreshRate = 0;
         }
         public EnforcerThread()
         {
             activeThread = null;
             defaultBrightness = 100;
-            defaultIsEnforced = false;
+            useDefBright = false;
             refreshRate = 0;
         }
 
@@ -158,40 +161,49 @@ namespace Auto_Dimmer
             this.defaultBrightness = updateBrightness;
             if(isValidBrightness(defaultBrightness))
             {
-                this.defaultIsEnforced = true;
+                this.useDefBright = true;
             }
             else
             {
-                this.defaultIsEnforced = false;
+                this.useDefBright = false;
             }
             
             startThread(); //Time has begun to move again.
         }
-        public void updateSettings(AllSettings update)
+        public bool updateSettings(AllSettings update)
         {
             stopThread();
 
-            this.refreshRate = update.getSetting("rrate").getValue();
-
-            if (isValidRefreshRate(this.refreshRate))
+            if (isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").getValue())
             {
-
+                this.refreshRate = update.getSetting("rrate").getValue();
             }
             else
             {
                 this.refreshRate = 1000;
+                this.useRR = false;
             }
 
-            this.defaultBrightness = update.getSetting("dbright").getValue();
             if (isValidBrightness(defaultBrightness))
             {
-                update.getSetting("usedbright").getValue();
+                try
+                {
+                    this.refreshRate = update.getSetting("usedbright").getValue();
+                }
+                catch(Exception E)
+                {
+                    Console.WriteLine(E.ToString());
+                    return false;
+                }
             }
             else
             {
-                defaultIsEnforced = false;
+                useDefBright = false;
+                this.defaultBrightness = 100;
             }
             startThread();
+
+            return true;
         }
 
     }

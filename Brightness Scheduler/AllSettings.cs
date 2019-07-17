@@ -17,15 +17,31 @@ namespace Auto_Dimmer
         {
             fillDictionary();
             this.fileData = fromFile;
-            extractAllSettings();
-            verifyAllSettings();
+            extractAllSettings(this.fileData, this.listOfSettings);
+            verifyAllSettings(ref this.listOfSettings);
         }
 
-        private void fillDictionary()
+        private void fillDictionary() //Fills a dictionary of all settings and their valid types
         {
-            validSettings.Add("rrate", typeof(String));
-            validSettings.Add("dbright", typeof(bool));
-            validSettings.Add("usedbright",typeof(bool));
+
+            validSettings.Add("rrate", typeof(int)); //RefreshRate 
+            validSettings.Add("userrate", typeof(bool)); //Use RefreshRate
+
+            validSettings.Add("dbright", typeof(int)); //Default brightness
+            validSettings.Add("usedbright", typeof(bool)); //Use default brightness
+
+            validSettings.Add("skiplines", typeof(bool)); //Skip console lines
+            validSettings.Add("startonlaunch", typeof(bool)); //Start on Windows launch
+        }
+
+        void extractAllSettings(String[] data, List<Setting> toFill) //Extracts Settings from
+        {
+
+        }
+
+        private void verifyAllSettings(ref List<Setting> toFill)
+        {
+
         }
     }
 }
