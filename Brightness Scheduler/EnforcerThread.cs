@@ -174,9 +174,9 @@ namespace Auto_Dimmer
         {
             stopThread();
 
-            if (isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").getValue())
+            if (isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").trueVal)
             {
-                this.refreshRate = update.getSetting("rrate").getValue();
+                this.refreshRate = update.getSetting("rrate").trueVal;
             }
             else
             {
@@ -188,7 +188,7 @@ namespace Auto_Dimmer
             {
                 try
                 {
-                    this.refreshRate = update.getSetting("usedbright").getValue();
+                    this.refreshRate = update.getSetting("usedbright").trueVal;
                 }
                 catch(Exception E)
                 {

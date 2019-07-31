@@ -24,7 +24,7 @@ namespace Auto_Dimmer
         private static String fileLoc = @"./";
 
         private List<BrightnessRequest> requests = new List<BrightnessRequest>();
-        private AllSettings globalSettings;
+        private AllSettings globalSettings = null;
 
         EnforcerThread running;
 
@@ -32,17 +32,25 @@ namespace Auto_Dimmer
         {
             richTextBox1.AppendText("Data Log:\n");
             richTextBox2.AppendText("Program Log:\n");
+            
+            /* LOAD SETTINGS FROM FILE */
+            FileManager fm1 = new FileManager(fileLoc, fileNameS);
+            String[] rawData1 = null;
+            consoleAppend(fm1.initialize(ref rawData1));
+
+            //Pass off the raw data to globalSettings to be initialized
+            globalSettings = new AllSettings(rawData1);
+
+            consoleAppend(globalSettings.ToString());
+
+
+
+            /* LOAD BRIGHTNESS REQUESTS FROM FILE */
 
             //Get BrightnessRequest data from file 
             FileManager fm0 = new FileManager(fileLoc, fileNameR);
             String[] rawData0 = null;
             consoleAppend(fm0.initialize(ref rawData0));
-
-            //Get BrightnessRequest data from file 
-            FileManager fm1 = new FileManager(fileLoc, fileNameS);
-            String[] rawData1 = null;
-            consoleAppend(fm1.initialize(ref rawData1));
-
             
             loadRequests(rawData0);
             displayEvents();

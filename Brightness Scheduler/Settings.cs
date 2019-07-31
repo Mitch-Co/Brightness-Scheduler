@@ -8,25 +8,25 @@ namespace Auto_Dimmer
 {
     class Setting
     {
-        private String lineVal { get; set; }
+        public String lineVal { get; private set; }
 
-        private String name { get; set; }
+        public String name { get; private set; }
 
-        private String valueStr { get; set; }
+        public dynamic trueVal { get; private set; }
 
-        private dynamic trueVal { get; }
+        public Type typeOf { get; private set; }
 
-        private bool isValid { get; set; }
+        public bool isValid { get; private set; }
 
         public Setting(String line, Dictionary<String, Type> verificationDic) //Input is the line of the "settings.txt" file
         {
-
+            this.isValid = false;
             this.lineVal = line == null ? null : line.ToLower(); 
-            this.trueVal = initialize(line, verificationDic);
+            this.trueVal = initializeFromLine(line, verificationDic);
             
         }
 
-        private dynamic initialize(String line, Dictionary<String, Type> verificationDic)
+        private dynamic initializeFromLine(String line, Dictionary<String, Type> verificationDic)
         {
             if(verificationDic == null || line == null)
             {
@@ -43,16 +43,22 @@ namespace Auto_Dimmer
                 }
 
                 this.name = splitLine[0];
-                this.valueStr = splitLine[1];
 
+                bool hasBeenSet = false;
                 foreach(KeyValuePair<String, Type> kvp in verificationDic)
                 {
-                    if(kvp.Key.Equals(splitLine[0]))
+                    if(kvp.Key == splitLine[0])
                     {
-                        toReturn = Convert.ChangeType(splitLine[0], kvp.Value);
+                        toReturn = Convert.ChangeType(splitLine[1], kvp.Value);
+                        hasBeenSet = true;
                     }
                 }
                 
+                if(!hasBeenSet)
+                {
+                    this.isValid = false;
+                    return null;
+                }
             }
             catch(Exception E)
             {
