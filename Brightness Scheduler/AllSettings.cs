@@ -42,6 +42,7 @@ namespace Auto_Dimmer
             validSettings.Add("usedbright", typeof(bool)); //Use default brightness
 
             validSettings.Add("skiplines", typeof(bool)); //Skip console lines
+            validSettings.Add("minwin", typeof(bool)); //Minimize window on launch
             validSettings.Add("startonlaunch", typeof(bool)); //Start on Windows launch
         }
 
@@ -99,7 +100,7 @@ namespace Auto_Dimmer
             return null;
         }
 
-        public override String ToString()
+        public override String ToString() //ONLY USE FOR TESTING, MAY CRASH WHEN PRESENTED WITH UNUSUAL TYPES
         {
             String toReturn = null;
             foreach (Setting S in listOfSettings)
@@ -110,6 +111,11 @@ namespace Auto_Dimmer
                 }
             }
             return toReturn;
+        }
+
+        public bool overrideSetting(String name, String value)
+        {
+            return true; //TODO: THIS FUNCTION
         }
     }
 }

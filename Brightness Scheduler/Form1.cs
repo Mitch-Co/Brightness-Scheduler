@@ -41,11 +41,11 @@ namespace Auto_Dimmer
             //Pass off the raw data to globalSettings to be initialized
             globalSettings = new AllSettings(rawData1);
 
-            consoleAppend(globalSettings.ToString());
-
-
+            applySettings(globalSettings);
 
             /* LOAD BRIGHTNESS REQUESTS FROM FILE */
+
+            OHGODSHUTITDOWN("YEEET", false);
 
             //Get BrightnessRequest data from file 
             FileManager fm0 = new FileManager(fileLoc, fileNameR);
@@ -60,7 +60,6 @@ namespace Auto_Dimmer
             running = new EnforcerThread(requests);
 
             running.startThread();
-
         }
 
          /*
@@ -168,6 +167,11 @@ namespace Auto_Dimmer
             richTextBox2.ScrollToCaret();
         }
 
+        public void consoleClear()
+        {
+            richTextBox2.Clear();
+        }
+
         private void loadRequests(string[] rawData) //Loads requests from a string array to the BR list
         {
             requests.Clear();
@@ -188,6 +192,71 @@ namespace Auto_Dimmer
 
             }
         }
+
+        private void applySettings(AllSettings toDisplay)
+        {
+            Setting temp; //Stores setting so global setting list does not have to be traversed more than once per lookup
+
+            //TODO: These if statements could be shortened using '?' operator, but they might look more confusing
+            temp = toDisplay.getSetting("usedbright");
+            if (temp != null && temp.trueVal) //If setting exists and is true
+            {
+                radioButton1.Checked = true;
+
+                temp = toDisplay.getSetting("dbright");
+                if(temp == null) //If the user messes with the data file, this can happen
+                {
+                    label6.Text = "(Current: 100)";
+                    if(!toDisplay.overrideSetting("dbright", "100")) //if something has gone wrong generating and adding a new setting
+                    {
+                        settingsCreationError();
+                    }
+                }
+                else
+                {
+                    label6.Text = "(Current: " + temp.trueVal.ToString() + ")";
+                }
+
+            }
+            else
+            {
+                radioButton1.Checked = false;
+            }
+
+            temp = toDisplay.getSetting("minwin");
+            if (temp != null && temp.trueVal)
+            {
+                radioButton2.Checked = true;
+            }
+            else
+            {
+                radioButton2.Checked = false;
+            }
+
+            temp = toDisplay.getSetting("userrate");
+            if (temp != null && temp.trueVal)
+            {
+                radioButton3.Checked = true;
+            }
+            else
+            {
+                radioButton3.Checked = false;
+            }
+
+            temp = toDisplay.getSetting("skiplines");
+            if (temp != null && temp.trueVal)
+            {
+                radioButton3.Checked = true;
+            }
+            else
+            {
+                radioButton3.Checked = false;
+            }
+
+
+
+        }
+
         private void displayEvents()
         {
             richTextBox1.Clear();
@@ -209,6 +278,40 @@ namespace Auto_Dimmer
             consoleAppend("Make sure you don't have any conflicting events");
             consoleAppend("Event " + err + " and the one you entered are conflicting");
         }
+
+        public void settingsCreationError()
+        {
+            OHGODSHUTITDOWN("Unable to generate new settings!", false);
+        }
+
+        public void OHGODSHUTITDOWN(String Err, bool LIKESEAROUSLYWENEEDTOSHUTITDOWNNOW) //Last resort shutdown
+        {
+            if(LIKESEAROUSLYWENEEDTOSHUTITDOWNNOW)
+            {
+                Environment.Exit(-1);
+            }
+
+            consoleClear();
+            consoleAppend("A CRITICAL ERROR HAS OCCURED, PLEASE REINSTALL");
+            consoleAppend("ERROR: " + Err);
+            lockAll();
+        }
+
+        private void lockAll()
+        {
+            lockRecursive(this);
+            this.Enabled = true;
+        }
+
+        private void lockRecursive(Control toLock) // Locks elements 
+        {
+            foreach(Control C in toLock.Controls)
+            {
+                lockRecursive(C);
+            }
+            toLock.Enabled = false;
+        }
+
         private void Label3_Click(object sender, EventArgs e)
         {
 
