@@ -25,6 +25,7 @@ namespace Auto_Dimmer
         private static Dictionary<String, Type> validSettings = new Dictionary<String, Type>();
 
         private String[] fileData;
+
         public AllSettings(String[] fromFile)
         {
             fillDictionary();
@@ -48,7 +49,7 @@ namespace Auto_Dimmer
 
         private void extractAllSettings(String[] data, List<Setting> toFill) //Extracts Settings from data file
         {
-            foreach (String S in data)
+            foreach(String S in data)
             {
                 toFill.Add(extractSetting(S));
             }
@@ -78,7 +79,8 @@ namespace Auto_Dimmer
             }
         }
 
-        private bool verifySetting(Setting toCheck)
+        //TODO: MAYBE REMOVE VERIFYSETTING
+        private bool verifySetting(Setting toCheck) //This exists because allsettings verification may change later
         {
             if(toCheck.isValid) //If valid return true
             {
@@ -91,7 +93,7 @@ namespace Auto_Dimmer
         {
             foreach(Setting S in listOfSettings)
             {
-                if (toFind == S.name)
+                if(toFind == S.name)
                 {
                     return S;
                 }
@@ -103,7 +105,7 @@ namespace Auto_Dimmer
         public override String ToString() //ONLY USE FOR TESTING, MAY CRASH WHEN PRESENTED WITH UNUSUAL TYPES
         {
             String toReturn = null;
-            foreach (Setting S in listOfSettings)
+            foreach(Setting S in listOfSettings)
             {
                 if(S.isValid)
                 {
@@ -115,7 +117,57 @@ namespace Auto_Dimmer
 
         public bool overrideSetting(String name, String value)
         {
-            return true; //TODO: THIS FUNCTION
+            if(name == null || value == null)
+            {
+                return false;
+            }
+
+            Setting toAdd = new Setting(name + ":" + value, validSettings);
+
+            if(!toAdd.isValid)
+            {
+                return false;
+            }
+
+            List<Setting> hitList = new List<Setting>();
+            foreach(Setting S in this.listOfSettings)
+            {
+                if(S.name == name)
+                {
+                    hitList.Add(S);
+                }
+            }
+            foreach(Setting S in hitList)
+            {
+                this.listOfSettings.Remove(S);
+            }
+
+            this.listOfSettings.Add(toAdd);
+            return true;
+
+
         }
+
+        public String[] toStringArray()
+        {
+            if(!listOfSettings.Any())
+            {
+                return null;
+            }
+
+            List<String> printList = new List<String>();
+            foreach(Setting S in listOfSettings)
+            {
+                if(S.isValid)
+                {
+                    printList.Add(S.lineVal);
+                }
+            }
+
+            String[] toReturn = printList.ToArray();
+
+            return toReturn;
+        }
+
     }
 }

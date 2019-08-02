@@ -10,11 +10,11 @@ namespace Auto_Dimmer
 {
     class EnforcerThread
     {
-        bool useDefBright; 
-        private int defaultBrightness;
+        bool useDefBright = false; 
+        private int defaultBrightness = 100;
 
-        private bool useRR;
-        private int refreshRate;
+        private bool useRR = false;
+        private int refreshRate = 1000;
 
         private List<BrightnessRequest> toService;
 
@@ -29,7 +29,15 @@ namespace Auto_Dimmer
 
             while(true)
             {
-                System.Threading.Thread.Sleep(3000);
+                if(useRR && isValidRefreshRate(refreshRate))
+                {
+                    System.Threading.Thread.Sleep(refreshRate);
+                }
+                else
+                {
+                    System.Threading.Thread.Sleep(3000);
+                }
+                
                 DateTime localDT = DateTime.Now;
                 Time24Hours localTime = Time24Hours.stringTo24HTime(localDT.ToString("HH:mm:ss"),':');
                 if(localTime != null)
@@ -37,7 +45,7 @@ namespace Auto_Dimmer
                     bool defaultB = true;
                     foreach(BrightnessRequest BR in toService)
                     {
-                        if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
+                        if(localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
                         {
                             setBrightness(BR.getBrightness());
                             defaultB = false;
@@ -89,7 +97,7 @@ namespace Auto_Dimmer
                 System.Management.ManagementObjectSearcher mos = new System.Management.ManagementObjectSearcher(scope, query);
                 System.Management.ManagementObjectCollection moc = mos.Get();
 
-                foreach (System.Management.ManagementObject o in moc) //Don't ask questions you don't want to know the answer to
+                foreach(System.Management.ManagementObject o in moc) //Don't ask questions you don't want to know the answer to
                 {
                     o.InvokeMethod("WmiSetBrightness", new Object[] { UInt32.MaxValue, brightnessInBytes });
                     break; //Searously
@@ -100,7 +108,7 @@ namespace Auto_Dimmer
 
                 /* END OF DANGER ZONE CODE */
             }
-            catch (Exception E)
+            catch(Exception E)
             {
                 Console.WriteLine(E.ToString());
                 return false;
@@ -122,7 +130,7 @@ namespace Auto_Dimmer
         {
             try
             {
-                if (activeThread != null)
+                if(activeThread != null)
                 {
                     activeThread.Abort();
                 }
@@ -146,7 +154,7 @@ namespace Auto_Dimmer
 
         public bool isValidRefreshRate(int toCheck)
         {
-            if (refreshRate > 0 && refreshRate < 600000) //Must be in between 1ms and 10min
+            if(refreshRate > 20 && refreshRate < 600000) //Must be in between 20ms and 10min
             {
                 return true;
             }
@@ -172,9 +180,9 @@ namespace Auto_Dimmer
         }
         public bool updateSettings(AllSettings update)
         {
-            stopThread();
-
-            if (isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").trueVal)
+            stopThread(); //REDO
+            /*
+            if(isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").trueVal)
             {
                 this.refreshRate = update.getSetting("rrate").trueVal;
             }
@@ -184,7 +192,7 @@ namespace Auto_Dimmer
                 this.useRR = false;
             }
 
-            if (isValidBrightness(defaultBrightness))
+            if(isValidBrightness(defaultBrightness))
             {
                 try
                 {
@@ -202,6 +210,7 @@ namespace Auto_Dimmer
                 this.defaultBrightness = 100;
             }
             startThread();
+            */
 
             return true;
         }

@@ -55,7 +55,7 @@ namespace Auto_Dimmer
         public String saveAllBR(List<BrightnessRequest> requests)
         {
             String toReturn = "FILE SAVING ERROR!!!";
-            List<BrightnessRequest> hitList = new List<BrightnessRequest>(); //TODO: Remove this list and use an iterator
+            List<BrightnessRequest> hitList = new List<BrightnessRequest>();
             foreach (BrightnessRequest BR in requests)
             {
                 if (!BR.isValid())
@@ -97,6 +97,22 @@ namespace Auto_Dimmer
             }
             return toReturn;
         }
+
+        public bool saveAllSettings(AllSettings toSave)
+        {
+            String[] settingsData = toSave.toStringArray();
+
+            try
+            {
+                System.IO.File.WriteAllLines(this.filePath, settingsData);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 
 

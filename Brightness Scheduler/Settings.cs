@@ -23,7 +23,6 @@ namespace Auto_Dimmer
             this.isValid = false;
             this.lineVal = line == null ? null : line.ToLower(); 
             this.trueVal = initializeFromLine(line, verificationDic);
-            
         }
 
         private dynamic initializeFromLine(String line, Dictionary<String, Type> verificationDic)
@@ -45,7 +44,7 @@ namespace Auto_Dimmer
                 this.name = splitLine[0];
 
                 bool hasBeenSet = false;
-                foreach(KeyValuePair<String, Type> kvp in verificationDic)
+                foreach (KeyValuePair<String, Type> kvp in verificationDic)
                 {
                     if(kvp.Key == splitLine[0])
                     {
@@ -60,7 +59,7 @@ namespace Auto_Dimmer
                     return null;
                 }
             }
-            catch(Exception E)
+            catch (Exception E)
             {
                 Console.Out.WriteLine(E);
                 this.isValid = false;

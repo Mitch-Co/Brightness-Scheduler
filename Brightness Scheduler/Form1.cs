@@ -26,7 +26,7 @@ namespace Auto_Dimmer
         private List<BrightnessRequest> requests = new List<BrightnessRequest>();
         private AllSettings globalSettings = null;
 
-        EnforcerThread running;
+        EnforcerThread running = null;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -40,12 +40,9 @@ namespace Auto_Dimmer
 
             //Pass off the raw data to globalSettings to be initialized
             globalSettings = new AllSettings(rawData1);
-
             applySettings(globalSettings);
 
             /* LOAD BRIGHTNESS REQUESTS FROM FILE */
-
-            OHGODSHUTITDOWN("YEEET", false);
 
             //Get BrightnessRequest data from file 
             FileManager fm0 = new FileManager(fileLoc, fileNameR);
@@ -89,7 +86,7 @@ namespace Auto_Dimmer
             //Assemble request
             BrightnessRequest newReq = BrightnessRequest.fromString(0, startT.toFileString() + ";" + endT.toFileString() + ";" + inputBrightness.ToString());
 
-            if (newReq != null && !newReq.isValid()) //Check if request is valid
+            if(newReq != null && !newReq.isValid()) //Check if request is valid
             {
                 inputError1();
                 return;
@@ -103,7 +100,7 @@ namespace Auto_Dimmer
                     inputError2(BR.orderNum);
                     return;
                 }
-                if (newReq.getStartTime().equals(BR.getStartTime()) || newReq.getEndTime().equals(BR.getEndTime()))
+                if(newReq.getStartTime().equals(BR.getStartTime()) || newReq.getEndTime().equals(BR.getEndTime()))
                 {
                     inputError2(BR.orderNum);
                     return;
@@ -175,7 +172,7 @@ namespace Auto_Dimmer
         private void loadRequests(string[] rawData) //Loads requests from a string array to the BR list
         {
             requests.Clear();
-            if (rawData == null)
+            if(rawData == null)
             {
                 return;
             }
@@ -197,20 +194,17 @@ namespace Auto_Dimmer
         {
             Setting temp; //Stores setting so global setting list does not have to be traversed more than once per lookup
 
-            //TODO: These if statements could be shortened using '?' operator, but they might look more confusing
             temp = toDisplay.getSetting("usedbright");
-            if (temp != null && temp.trueVal) //If setting exists and is true
+            if(temp != null && temp.trueVal) //If setting exists and is true
             {
-                radioButton1.Checked = true;
+                checkBox1.Checked = true;
+                checkBox1.CheckState = CheckState.Indeterminate;
 
                 temp = toDisplay.getSetting("dbright");
                 if(temp == null) //If the user messes with the data file, this can happen
                 {
                     label6.Text = "(Current: 100)";
-                    if(!toDisplay.overrideSetting("dbright", "100")) //if something has gone wrong generating and adding a new setting
-                    {
-                        settingsCreationError();
-                    }
+                    updateSetting("dbright", "100");
                 }
                 else
                 {
@@ -220,40 +214,61 @@ namespace Auto_Dimmer
             }
             else
             {
-                radioButton1.Checked = false;
+                checkBox1.Checked = false;
             }
 
             temp = toDisplay.getSetting("minwin");
-            if (temp != null && temp.trueVal)
+            if(temp != null && temp.trueVal)
             {
-                radioButton2.Checked = true;
+                checkBox2.Checked = true;
+                checkBox2.CheckState = CheckState.Indeterminate;
             }
             else
             {
-                radioButton2.Checked = false;
+                checkBox2.Checked = false;
             }
 
             temp = toDisplay.getSetting("userrate");
-            if (temp != null && temp.trueVal)
+            if(temp != null && temp.trueVal)
             {
-                radioButton3.Checked = true;
+                checkBox3.Checked = true;
+                checkBox3.CheckState = CheckState.Indeterminate;
             }
             else
             {
-                radioButton3.Checked = false;
+                checkBox3.Checked = false;
             }
 
             temp = toDisplay.getSetting("skiplines");
-            if (temp != null && temp.trueVal)
+            if(temp != null && temp.trueVal)
             {
-                radioButton3.Checked = true;
+                checkBox4.Checked = true;
+                checkBox4.CheckState = CheckState.Indeterminate;
             }
             else
             {
-                radioButton3.Checked = false;
+                checkBox4.Checked = false;
             }
 
+        }
 
+        private void updateSetting(String name, String value)
+        {
+            //Add Setting to global list
+            if(!globalSettings.overrideSetting(name, value))
+            {
+                settingsCreationError();
+            }
+
+            //Update EnforcerThread
+            if(running != null)
+            {
+                running.updateSettings(globalSettings);
+            }
+
+            //Save Settings To file
+            FileManager fm = new FileManager(fileLoc, fileNameS);
+            fm.saveAllSettings(globalSettings);
 
         }
 
@@ -261,7 +276,7 @@ namespace Auto_Dimmer
         {
             richTextBox1.Clear();
             richTextBox1.AppendText("Current Brightness Settings:\n");
-            foreach (BrightnessRequest BR in requests)
+            foreach(BrightnessRequest BR in requests)
             {
                 richTextBox1.AppendText("\n" + BR.toString());
             }
@@ -342,24 +357,67 @@ namespace Auto_Dimmer
 
         }
 
-        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox2_Click(object sender, EventArgs e)
         {
-
+            if(checkBox2.Checked)
+            {
+                checkBox2.Checked = false;
+            }
+            else
+            {
+                checkBox2.Checked = true;
+                checkBox2.CheckState = CheckState.Indeterminate;
+            }
         }
 
-        private void RadioButton4_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_Click(object sender, EventArgs e)
         {
-
+            if(checkBox1.Checked)
+            {
+                checkBox1.Checked = false;
+                updateSetting("usedbright", "false");
+            }
+            else
+            {
+                checkBox1.Checked = true;
+                checkBox1.CheckState = CheckState.Indeterminate;
+                updateSetting("usedbright", "true");
+            }
         }
 
-        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
+        private void TextBox6_TextChanged(object sender, EventArgs e)
         {
-
+            checkBox3.Enabled = false;
+            checkBox3.Checked = false;
+            updateSetting("userrate", "false");
+            //TODO: CONTINUE
         }
 
-        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox3_Click(object sender, EventArgs e)
         {
+            if(checkBox3.Checked)
+            {
+                checkBox3.Checked = false;
+            }
+            else
+            {
+                checkBox3.Checked = true;
+                checkBox3.CheckState = CheckState.Indeterminate;
+            }
+        }
 
+        private void CheckBox4_Click(object sender, EventArgs e)
+        {
+            if(checkBox4.Checked)
+            {
+                checkBox4.Checked = false;
+            }
+            else
+            {
+                checkBox4.Checked = true;
+                checkBox4.CheckState = CheckState.Indeterminate;
+            }
         }
     }
+
 }
