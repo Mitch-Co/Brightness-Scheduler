@@ -25,13 +25,13 @@ namespace Auto_Dimmer
 
         private List<BrightnessRequest> requests = new List<BrightnessRequest>();
         private AllSettings globalSettings = null;
-
+        private bool skipslines = false;
         EnforcerThread running = null;
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            richTextBox1.AppendText("Data Log:\n");
-            richTextBox2.AppendText("Program Log:\n");
+            richTextBox1.AppendText("Data Log:\n\n");
+            richTextBox2.AppendText("Program Log:\n\n");
             
             /* LOAD SETTINGS FROM FILE */
             FileManager fm1 = new FileManager(fileLoc, fileNameS);
@@ -160,7 +160,11 @@ namespace Auto_Dimmer
         }
         public void consoleAppend(String toDisplay)
         {
-            richTextBox2.AppendText("\n> " + toDisplay + "\n");
+            if(skipslines == true)
+            {
+                richTextBox2.AppendText("\n");
+            }
+            richTextBox2.AppendText("> " + toDisplay + "\n");
             richTextBox2.ScrollToCaret();
         }
 
@@ -244,10 +248,12 @@ namespace Auto_Dimmer
             {
                 checkBox4.Checked = true;
                 checkBox4.CheckState = CheckState.Indeterminate;
+                skipslines = true;
             }
             else
             {
                 checkBox4.Checked = false;
+                skipslines = false;
             }
 
         }
@@ -264,6 +270,16 @@ namespace Auto_Dimmer
             if(running != null)
             {
                 running.updateSettings(globalSettings);
+            }
+
+            Setting temp = globalSettings.getSetting("skiplines");
+            if (temp != null && temp.trueVal)
+            {
+                skipslines = true;
+            }
+            else
+            {
+                skipslines = false;
             }
 
             //Save Settings To file
@@ -318,13 +334,18 @@ namespace Auto_Dimmer
             this.Enabled = true;
         }
 
-        private void lockRecursive(Control toLock) // Locks elements 
+        private void lockRecursive(Control toLock) // Locks elements under and including the element inputted
         {
             foreach(Control C in toLock.Controls)
             {
                 lockRecursive(C);
             }
             toLock.Enabled = false;
+        }
+
+        private void clearConsole()
+        {
+            richTextBox2.Clear();
         }
 
         private void Label3_Click(object sender, EventArgs e)
@@ -362,11 +383,13 @@ namespace Auto_Dimmer
             if(checkBox2.Checked)
             {
                 checkBox2.Checked = false;
+                updateSetting("minwin", "false");
             }
             else
             {
                 checkBox2.Checked = true;
                 checkBox2.CheckState = CheckState.Indeterminate;
+                updateSetting("minwin", "true");
             }
         }
 
@@ -398,11 +421,13 @@ namespace Auto_Dimmer
             if(checkBox3.Checked)
             {
                 checkBox3.Checked = false;
+                updateSetting("userrate", "false");
             }
             else
             {
                 checkBox3.Checked = true;
                 checkBox3.CheckState = CheckState.Indeterminate;
+                updateSetting("userrate", "true");
             }
         }
 
@@ -411,11 +436,13 @@ namespace Auto_Dimmer
             if(checkBox4.Checked)
             {
                 checkBox4.Checked = false;
+                updateSetting("skiplines", "false");
             }
             else
             {
                 checkBox4.Checked = true;
                 checkBox4.CheckState = CheckState.Indeterminate;
+                updateSetting("skiplines", "true");
             }
         }
     }

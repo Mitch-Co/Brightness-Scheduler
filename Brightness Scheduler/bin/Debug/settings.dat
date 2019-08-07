@@ -1,2 +1,5 @@
 dbright:100
+userrate:false
 usedbright:false
+minwin:false
+skiplines:false

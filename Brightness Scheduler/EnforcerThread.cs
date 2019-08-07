@@ -10,7 +10,7 @@ namespace Auto_Dimmer
 {
     class EnforcerThread
     {
-        bool useDefBright = false; 
+        bool useDefBright = false;
         private int defaultBrightness = 100;
 
         private bool useRR = false;
@@ -181,36 +181,59 @@ namespace Auto_Dimmer
         public bool updateSettings(AllSettings update)
         {
             stopThread(); //REDO
-            /*
-            if(isValidRefreshRate(this.refreshRate) && update.getSetting("userrate").trueVal)
+
+            Setting temp = null;
+
+            temp = update.getSetting("userrate");
+            if (temp != null)
             {
-                this.refreshRate = update.getSetting("rrate").trueVal;
+                useRR = temp.trueVal;
             }
             else
             {
-                this.refreshRate = 1000;
-                this.useRR = false;
+                useRR = false;
             }
 
-            if(isValidBrightness(defaultBrightness))
+            temp = update.getSetting("rrate");
+            if (temp != null)
             {
-                try
+                refreshRate = temp.trueVal;
+                if(!isValidRefreshRate(refreshRate))
                 {
-                    this.refreshRate = update.getSetting("usedbright").trueVal;
+                    useRR = false;
                 }
-                catch(Exception E)
+            }
+            else
+            {
+                useRR = false;
+            }
+
+            temp = update.getSetting("usedbright");
+            if (temp != null)
+            {
+                useDefBright = temp.trueVal;
+            }
+            else
+            {
+                useDefBright = false;
+            }
+
+            temp = update.getSetting("dbright");
+            if (temp != null)
+            {
+                defaultBrightness = temp.trueVal;
+                if (!isValidBrightness(defaultBrightness))
                 {
-                    Console.WriteLine(E.ToString());
-                    return false;
+                    useDefBright = false;
                 }
             }
             else
             {
                 useDefBright = false;
-                this.defaultBrightness = 100;
             }
+
             startThread();
-            */
+           
 
             return true;
         }
