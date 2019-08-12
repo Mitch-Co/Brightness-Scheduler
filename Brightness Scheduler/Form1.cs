@@ -30,6 +30,7 @@ namespace Auto_Dimmer
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             richTextBox1.AppendText("Data Log:\n\n");
             richTextBox2.AppendText("Program Log:\n\n");
             
@@ -444,6 +445,16 @@ namespace Auto_Dimmer
                 checkBox4.CheckState = CheckState.Indeterminate;
                 updateSetting("skiplines", "true");
             }
+        }
+
+        private void Form1_FormClosed_1(object sender, FormClosedEventArgs e)
+        {
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            running.stopThread();
         }
     }
 

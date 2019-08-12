@@ -20,42 +20,52 @@ namespace Auto_Dimmer
 
         private Thread activeThread;
 
+
         private void serviceRequests()
         {
+
             if(toService == null)
             {
                 return;
             }
 
-            while(true)
+            try
             {
-                if(useRR && isValidRefreshRate(refreshRate))
+                while (true)
                 {
-                    System.Threading.Thread.Sleep(refreshRate);
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(3000);
-                }
-                
-                DateTime localDT = DateTime.Now;
-                Time24Hours localTime = Time24Hours.stringTo24HTime(localDT.ToString("HH:mm:ss"),':');
-                if(localTime != null)
-                {
-                    bool defaultB = true;
-                    foreach(BrightnessRequest BR in toService)
+                    if (useRR && isValidRefreshRate(refreshRate))
                     {
-                        if(localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
+                        System.Threading.Thread.Sleep(refreshRate);
+                    }
+                    else
+                    {
+                        System.Threading.Thread.Sleep(3000);
+                    }
+                    Console.WriteLine("TICK\n");
+
+                    DateTime localDT = DateTime.Now;
+                    Time24Hours localTime = Time24Hours.stringTo24HTime(localDT.ToString("HH:mm:ss"), ':');
+                    if (localTime != null)
+                    {
+                        bool defaultB = true;
+                        foreach (BrightnessRequest BR in toService)
                         {
-                            setBrightness(BR.getBrightness());
-                            defaultB = false;
+                            if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
+                            {
+                                setBrightness(BR.getBrightness());
+                                defaultB = false;
+                            }
+                        }
+                        if (defaultB && useDefBright)
+                        {
+                            setBrightness(this.defaultBrightness);
                         }
                     }
-                    if(defaultB && useDefBright)
-                    {
-                        setBrightness(this.defaultBrightness);
-                    }
                 }
+            }
+            catch(ThreadInterruptedException)
+            {
+                return;
             }
         }
 
@@ -132,13 +142,14 @@ namespace Auto_Dimmer
             {
                 if(activeThread != null)
                 {
-                    activeThread.Abort();
+                    activeThread.Interrupt();
+                    activeThread.Join();
                 }
                 activeThread = null;
             }
-            catch(Exception E)
+            catch(ThreadAbortException)
             {
-                Console.WriteLine(E.ToString());
+                Thread.ResetAbort();
             }
         }
 
@@ -180,7 +191,7 @@ namespace Auto_Dimmer
         }
         public bool updateSettings(AllSettings update)
         {
-            stopThread(); //REDO
+            stopThread();
 
             Setting temp = null;
 
