@@ -56,7 +56,7 @@ namespace Auto_Dimmer
             this.FormClosed += new FormClosedEventHandler(Form1_FormClosed);
 
             running = new EnforcerThread(requests);
-
+            running.updateSettings(globalSettings);
             running.startThread();
         }
 
@@ -227,6 +227,7 @@ namespace Auto_Dimmer
             {
                 checkBox2.Checked = true;
                 checkBox2.CheckState = CheckState.Indeterminate;
+                this.WindowState = FormWindowState.Minimized;
             }
             else
             {
