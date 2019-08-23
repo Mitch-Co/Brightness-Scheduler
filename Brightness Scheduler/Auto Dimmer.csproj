@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="24HourTime.cs" />
+    <Compile Include="AllSettings.cs" />
     <Compile Include="BrightnessRequest.cs" />
     <Compile Include="EnforcerThread.cs" />
     <Compile Include="FileManager.cs" />
@@ -73,6 +74,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

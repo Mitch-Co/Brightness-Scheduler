@@ -155,8 +155,6 @@ namespace Auto_Dimmer
             int BtoInt = (10000 * B.Hours) + (100 * B.Minutes) + (B.Seconds);
             int thistoInt = (10000 * this.Hours) + (100 * this.Minutes) + (this.Seconds);
 
-            //Console.WriteLine(AtoInt + " " + thistoInt + " " + BtoInt);
-
             if(AtoInt == BtoInt) //Should never happen
             {
                 return false;

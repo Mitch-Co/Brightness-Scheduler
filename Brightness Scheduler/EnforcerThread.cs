@@ -10,41 +10,62 @@ namespace Auto_Dimmer
 {
     class EnforcerThread
     {
-        bool defaultIsEnforced; 
-        private int defaultBrightness;
+        bool useDefBright = false;
+        private int defaultBrightness = 100;
+
+        private bool useRR = false;
+        private int refreshRate = 1000;
 
         private List<BrightnessRequest> toService;
 
         private Thread activeThread;
 
+
         private void serviceRequests()
         {
+
             if(toService == null)
             {
                 return;
             }
 
-            while(true)
+            try
             {
-                System.Threading.Thread.Sleep(3000);
-                DateTime localDT = DateTime.Now;
-                Time24Hours localTime = Time24Hours.stringTo24HTime(localDT.ToString("HH:mm:ss"),':');
-                if(localTime != null)
+                while (true)
                 {
-                    bool defaultB = true;
-                    foreach(BrightnessRequest BR in toService)
+                    if (useRR && isValidRefreshRate(refreshRate))
                     {
-                        if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
+                        System.Threading.Thread.Sleep(refreshRate);
+                    }
+                    else
+                    {
+                        System.Threading.Thread.Sleep(3000);
+                    }
+                    Console.WriteLine("TICK\n");
+
+                    DateTime localDT = DateTime.Now;
+                    Time24Hours localTime = Time24Hours.stringTo24HTime(localDT.ToString("HH:mm:ss"), ':');
+                    if (localTime != null)
+                    {
+                        bool defaultB = true;
+                        foreach (BrightnessRequest BR in toService)
                         {
-                            setBrightness(BR.getBrightness());
-                            defaultB = false;
+                            if (localTime.fallsInbetween(BR.getStartTime(), BR.getEndTime())) //If the current time is in any request in toService
+                            {
+                                setBrightness(BR.getBrightness());
+                                defaultB = false;
+                            }
+                        }
+                        if (defaultB && useDefBright)
+                        {
+                            setBrightness(this.defaultBrightness);
                         }
                     }
-                    if(defaultB && defaultIsEnforced)
-                    {
-                        setBrightness(this.defaultBrightness);
-                    }
                 }
+            }
+            catch(ThreadInterruptedException)
+            {
+                return;
             }
         }
 
@@ -53,13 +74,15 @@ namespace Auto_Dimmer
             this.toService = requests;
             activeThread = null;
             defaultBrightness = 100;
-            defaultIsEnforced = false;
+            useDefBright = false;
+            refreshRate = 0;
         }
         public EnforcerThread()
         {
             activeThread = null;
             defaultBrightness = 100;
-            defaultIsEnforced = false;
+            useDefBright = false;
+            refreshRate = 0;
         }
 
 
@@ -77,21 +100,25 @@ namespace Auto_Dimmer
 
             try
             {
+                /* DANGER ZONE CODE - Only about 80% sure what this does */
+
                 System.Management.ManagementScope scope = new System.Management.ManagementScope("root\\WMI");
                 System.Management.SelectQuery query = new System.Management.SelectQuery("WmiMonitorBrightnessMethods");
                 System.Management.ManagementObjectSearcher mos = new System.Management.ManagementObjectSearcher(scope, query);
                 System.Management.ManagementObjectCollection moc = mos.Get();
 
-                foreach (System.Management.ManagementObject o in moc)
+                foreach(System.Management.ManagementObject o in moc) //Don't ask questions you don't want to know the answer to
                 {
                     o.InvokeMethod("WmiSetBrightness", new Object[] { UInt32.MaxValue, brightnessInBytes });
-                    break; //only work on the first object (for an unknown reason)
+                    break; //Searously
                 }
 
                 moc.Dispose();
                 mos.Dispose();
+
+                /* END OF DANGER ZONE CODE */
             }
-            catch (Exception E)
+            catch(Exception E)
             {
                 Console.WriteLine(E.ToString());
                 return false;
@@ -113,24 +140,113 @@ namespace Auto_Dimmer
         {
             try
             {
-                if (activeThread != null)
+                if(activeThread != null)
                 {
-                    activeThread.Abort();
+                    activeThread.Interrupt();
+                    activeThread.Join();
                 }
                 activeThread = null;
             }
-            catch(Exception E)
+            catch(ThreadAbortException)
             {
-                Console.WriteLine(E.ToString());
+                Thread.ResetAbort();
             }
+        }
+
+        public bool isValidBrightness(int toCheck)
+        {
+            if(toCheck < 0 || toCheck > 100)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool isValidRefreshRate(int toCheck)
+        {
+            if(refreshRate > 20 && refreshRate < 600000) //Must be in between 20ms and 10min
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void updateDefault(int updateBrightness)
         {
-            stopThread();
+            stopThread(); //ZA WARUDO 
+
             this.defaultBrightness = updateBrightness;
-            defaultIsEnforced = true;
+            if(isValidBrightness(defaultBrightness))
+            {
+                this.useDefBright = true;
+            }
+            else
+            {
+                this.useDefBright = false;
+            }
+            
+            startThread(); //Time has begun to move again.
+        }
+        public bool updateSettings(AllSettings update)
+        {
+            stopThread();
+
+            Setting temp = null;
+
+            temp = update.getSetting("userrate");
+            if (temp != null)
+            {
+                useRR = temp.trueVal;
+            }
+            else
+            {
+                useRR = false;
+            }
+
+            temp = update.getSetting("rrate");
+            if (temp != null)
+            {
+                refreshRate = temp.trueVal;
+                if(!isValidRefreshRate(refreshRate))
+                {
+                    useRR = false;
+                }
+            }
+            else
+            {
+                useRR = false;
+            }
+
+            temp = update.getSetting("usedbright");
+            if (temp != null)
+            {
+                useDefBright = temp.trueVal;
+            }
+            else
+            {
+                useDefBright = false;
+            }
+
+            temp = update.getSetting("dbright");
+            if (temp != null)
+            {
+                defaultBrightness = temp.trueVal;
+                if (!isValidBrightness(defaultBrightness))
+                {
+                    useDefBright = false;
+                }
+            }
+            else
+            {
+                useDefBright = false;
+            }
+
             startThread();
+           
+
+            return true;
         }
 
     }
