@@ -1,5 +1,5 @@
 # Brightness-Scheduler
-A program that dims and brightens windows tablets and laptops.
+A program that dims and brightens windows tablets and laptops. Do note this does not work on desktops.
 
 ## Getting Started
 
