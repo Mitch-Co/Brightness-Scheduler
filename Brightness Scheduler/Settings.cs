@@ -18,7 +18,7 @@ namespace Auto_Dimmer
 
         public bool isValid { get; private set; }
 
-        public Setting(String line, Dictionary<String, Type> verificationDic) //Input is the line of the "settings.txt" file
+        public Setting(String line, Dictionary<String, Type> verificationDic) // Input is the line of the "settings.txt" file
         {
             this.isValid = false;
             this.lineVal = line == null ? null : line.ToLower(); 
